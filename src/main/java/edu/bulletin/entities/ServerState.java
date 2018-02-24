@@ -1,0 +1,12 @@
+package edu.bulletin.entities;
+
+import lombok.Value;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+@Value
+public class ServerState {
+    private final SharedNews sharedNews = new SharedNews(-1);
+    private final AtomicInteger numOfReaders = new AtomicInteger(0);
+    private final AtomicInteger numOfWriters = new AtomicInteger(0);
+}

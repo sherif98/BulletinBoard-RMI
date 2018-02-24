@@ -11,18 +11,23 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
-public class Server {
+public class BulletinServer extends Thread {
     private final ServerState serverState = new ServerState();
     private final AtomicInteger numOfClients = new AtomicInteger(0);
     private final LogFileHandler logFileHandler = new LogFileHandler();
 
-    public void serve() {
+    public BulletinServer() {
+        super.start();
+    }
+
+    @Override
+    public void run() {
         final ServerConfiguration config = ServerConfiguration.getInstance();
         final int clientsCount = config.getNumOfAccess() * config.getNumOfReaders() * config.getNumOfWriters();
         final List<WorkerThread> workerThreads = new ArrayList<>();
         try {
+            final ServerSocket serverSocket = new ServerSocket(config.getPort());
             for (int i = 0; i < clientsCount; ++i) {
-                final ServerSocket serverSocket = new ServerSocket(config.getPort());
                 final Socket clientSocket = serverSocket.accept();
                 workerThreads.add(new WorkerThread(serverState, clientSocket, numOfClients.incrementAndGet(), logFileHandler));
             }

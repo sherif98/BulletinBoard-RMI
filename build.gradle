@@ -20,5 +20,4 @@ dependencies {
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '1.5.10.RELEASE'
-
 }

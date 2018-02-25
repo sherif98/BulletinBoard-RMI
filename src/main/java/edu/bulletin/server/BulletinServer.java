@@ -23,12 +23,13 @@ public class BulletinServer extends Thread {
     @Override
     public void run() {
         final ServerConfiguration config = ServerConfiguration.getInstance();
-        final int clientsCount = config.getNumOfAccess() * config.getNumOfReaders() * config.getNumOfWriters();
+        final int clientsCount = config.getNumOfAccess() * (config.getNumOfReaders() + config.getNumOfWriters());
         final List<WorkerThread> workerThreads = new ArrayList<>();
         try {
             final ServerSocket serverSocket = new ServerSocket(config.getPort());
             for (int i = 0; i < clientsCount; ++i) {
                 final Socket clientSocket = serverSocket.accept();
+                log.info("client connected spawning worker thread");
                 workerThreads.add(new WorkerThread(serverState, clientSocket, numOfClients.incrementAndGet(), logFileHandler));
             }
 
@@ -41,7 +42,8 @@ public class BulletinServer extends Thread {
             });
 
         } catch (final Exception e) {
-            log.error("failed to create server socket");
+            log.error("failed to create server socket", e);
         }
+        logFileHandler.close();
     }
 }

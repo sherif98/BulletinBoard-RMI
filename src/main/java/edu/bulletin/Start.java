@@ -1,49 +1,127 @@
 package edu.bulletin;
 
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 import edu.bulletin.entities.ServerConfiguration;
 import edu.bulletin.server.BulletinServer;
 import edu.bulletin.server.SSHManager;
+import lombok.extern.log4j.Log4j2;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@Log4j2
 public class Start {
+
+    private static final String READER = "Reader";
+    private static final String WRITER = "Writer";
+
     public static void main(String[] args) throws JSchException {
+        start(args[0]);
+    }
+
+    private static void start(String pass) {
         final ServerConfiguration config = ServerConfiguration.getInstance();
         final BulletinServer server = new BulletinServer();
-        final JSch jsch = new JSch();
-        for (String host : config.getReaderNames()) {
-            final Session session = jsch.getSession(host);
+        SSHManager sshManager = new SSHManager();
+
+
+        int i;
+        Optional<String> readerCode = readFile(READER);
+        for (i = 0; i < config.getReaderNames().size(); i++) {
+            String command =
+                    new CommandsBuilder(config.getIp(),
+                            config.getPort(),
+                            READER,
+                            readerCode.get(),
+                            i + 1,
+                            config.getNumOfAccess())
+                            .buildCommands();
+            sshManager.executeCommand(config.getReaderNames().get(i), pass, command + "\n");
+        }
+
+        Optional<String> writerCode = readFile(WRITER);
+        for (int j = 0; j < config.getNumOfWriters(); j++) {
+            String command =
+                    new CommandsBuilder(config.getIp(),
+                            config.getPort(),
+                            WRITER,
+                            writerCode.get(),
+                            ++i,
+                            config.getNumOfAccess())
+                            .buildCommands();
+            sshManager.executeCommand(config.getWriterNames().get(j), pass, command + "\n");
+        }
+
+
+        try {
+            server.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    private static void configureSshHost(final Session session) {
-        System.out.println("sendCommand");
 
-        /**
-         * YOU MUST CHANGE THE FOLLOWING
-         * FILE_NAME: A FILE IN THE DIRECTORY
-         * USER: LOGIN USER NAME
-         * PASSWORD: PASSWORD FOR THAT USER
-         * HOST: IP ADDRESS OF THE SSH SERVER
-         **/
-        String command = "ls";
-        String userName = "USER";
-        String password = "PASSWORD";
-        String connectionIP = "HOST";
-        SSHManager instance = new SSHManager(userName, password, connectionIP, "");
-        String errorMessage = instance.connect();
-
-        if (errorMessage != null) {
-            System.out.println(errorMessage);
+    private static Optional<String> readFile(String fileName) {
+        String path = "./src/main/java/" + fileName + ".java";
+        try {
+            return Optional.ofNullable(Files.lines(Paths.get(path)).collect(Collectors.joining("\n")));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return Optional.empty();
+    }
+}
 
-        String expResult = "FILE_NAME\n";
-        // call sendCommand for each command and the output
-        //(without prompts) is returned
-        String result = instance.sendCommand(command);
-        // close only after all commands are sent
-        instance.close();
-        System.out.println(result);
+class CommandsBuilder {
+
+    private String className;
+    private String code;
+    private String hostName;
+    private int portNumber;
+    private int clientId;
+    private int numberOfAccess;
+
+    public CommandsBuilder(String hostName, int portNumber, String className, String code, int clientId, int numberOfAccess) {
+        this.className = className;
+        this.code = code;
+        this.hostName = hostName;
+        this.portNumber = portNumber;
+        this.clientId = clientId;
+        this.numberOfAccess = numberOfAccess;
+    }
+
+    public String buildCommands() {
+        return Stream.of(
+                buildRemoveCommand(),
+                buildMakeDirCommand(),
+                buildEchoCommand(),
+                buildCompileCommand(),
+                buildExecuteCommand())
+                .collect(Collectors.joining(";"));
+    }
+
+    private String buildRemoveCommand() {
+        return String.format("rm -rf %s%d || true", className, clientId);
+    }
+
+    private String buildMakeDirCommand() {
+        return String.format("mkdir %s%d; cd %s%d", className, clientId, className, clientId);
+    }
+
+    private String buildEchoCommand() {
+        return String.format("echo \'%s\' >> %s.java", code, className);
+
+    }
+
+    private String buildCompileCommand() {
+        return String.format("javac %s.java", className);
+    }
+
+    private String buildExecuteCommand() {
+        return String.format("java %s %s %d %d %d", className, hostName, portNumber, numberOfAccess, clientId);
     }
 }

@@ -25,19 +25,22 @@ public final class ServerConfiguration {
             serverConfiguration.setNumOfReaders(properties.getInt("RW.numberOfReaders"));
             for (int i = 0; i < serverConfiguration.numOfReaders; ++i) {
                 serverConfiguration.readerNames.add(properties.getString("RW.reader" + i));
+                serverConfiguration.readerPasswords.add(properties.getString("RW.reader" + i + ".pass"));
+
             }
             serverConfiguration.setNumOfWriters(properties.getInt("RW.numberOfWriters"));
             for (int i = 0; i < serverConfiguration.numOfWriters; ++i) {
                 serverConfiguration.writerNames.add(properties.getString("RW.writer" + i));
+                serverConfiguration.writerPasswords.add(properties.getString("RW.writer" + i + ".pass"));
             }
             serverConfiguration.setNumOfAccess(properties.getInt("RW.numberOfAccesses"));
-            serverConfiguration.setPassword(properties.getString("RW.password"));
         } catch (final Exception ex) {
             System.out.println("Failed to read system.properties");
         }
     }
 
-    private ServerConfiguration() {}
+    private ServerConfiguration() {
+    }
 
     public static ServerConfiguration getInstance() {
         return serverConfiguration;
@@ -48,7 +51,9 @@ public final class ServerConfiguration {
     private int numOfWriters;
     private int numOfAccess;
     private String ip;
-    private String password;
+
     private List<String> readerNames = new ArrayList<>();
     private List<String> writerNames = new ArrayList<>();
+    private List<String> readerPasswords = new ArrayList<>();
+    private List<String> writerPasswords = new ArrayList<>();
 }

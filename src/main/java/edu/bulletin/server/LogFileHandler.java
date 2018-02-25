@@ -15,8 +15,8 @@ public class LogFileHandler {
 
     public LogFileHandler() {
         try {
-            readerClientsFile = new FileWriter(READER_CLIENTS_FILE_PATH, true);
-            writerClientFile = new FileWriter(WRITER_CLIENTS_FILE_PATH, true);
+            readerClientsFile = new FileWriter(READER_CLIENTS_FILE_PATH);
+            writerClientFile = new FileWriter(WRITER_CLIENTS_FILE_PATH);
             readerClientsFile.write("sSeq\toVal\trID     rNum\n");
             writerClientFile.write("sSeq\toVal\twID\n");
         } catch (IOException e) {

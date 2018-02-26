@@ -20,7 +20,7 @@ public class Start {
     private static final String WRITER = "Writer";
 
     public static void main(String[] args) throws JSchException {
-        start(args[0]);
+        start("");
     }
 
     private static void start(String pass) {

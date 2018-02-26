@@ -40,7 +40,7 @@ public class Start {
                             i + 1,
                             config.getNumOfAccess())
                             .buildCommands();
-            sshManager.executeCommand(config.getReaderNames().get(i), pass, command + "\n");
+            sshManager.executeCommand(config.getReaderNames().get(i), config.getReaderPasswords().get(i), command + "\n");
         }
 
         Optional<String> writerCode = readFile(WRITER);
@@ -53,7 +53,7 @@ public class Start {
                             ++i,
                             config.getNumOfAccess())
                             .buildCommands();
-            sshManager.executeCommand(config.getWriterNames().get(j), pass, command + "\n");
+            sshManager.executeCommand(config.getWriterNames().get(j), config.getWriterPasswords().get(j), command + "\n");
         }
 
 

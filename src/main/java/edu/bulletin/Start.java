@@ -20,10 +20,10 @@ public class Start {
     private static final String WRITER = "Writer";
 
     public static void main(String[] args) throws JSchException {
-        start("");
+        start();
     }
 
-    private static void start(String pass) {
+    private static void start(String password) {
         final ServerConfiguration config = ServerConfiguration.getInstance();
         final BulletinServer server = new BulletinServer();
         SSHManager sshManager = new SSHManager();

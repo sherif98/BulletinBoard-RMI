@@ -1,13 +1,13 @@
 package edu.bulletin.server;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
 import edu.bulletin.entities.MyUserInfo;
-import jdk.internal.util.xml.impl.Input;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.ByteArrayInputStream;
 
 @Log4j2
 public class SSHManager {
@@ -25,8 +25,6 @@ public class SSHManager {
             session.setUserInfo(ui);
 
             session.connect(30000);   // making a connection with timeout.
-
-
 
             Channel channel = session.openChannel("shell");
 

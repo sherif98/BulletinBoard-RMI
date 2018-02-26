@@ -2,12 +2,15 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '1.11'
     id 'java'
     id 'idea'
+    id 'application'
 }
 
 group 'distributed-systems'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+
+mainClassName = 'edu.bulletin.Start'
 
 repositories {
     mavenCentral()

@@ -4,7 +4,6 @@ package edu.bulletin.jscp;
 
 import com.jcraft.jsch.*;
 
-import java.awt.*;
 import javax.swing.*;
 
 public class Shell {

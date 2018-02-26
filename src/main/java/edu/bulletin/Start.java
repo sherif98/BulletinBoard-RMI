@@ -1,6 +1,6 @@
 package edu.bulletin;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.JSchException;
 import edu.bulletin.entities.ServerConfiguration;
 import edu.bulletin.server.BulletinServer;
 import edu.bulletin.server.SSHManager;

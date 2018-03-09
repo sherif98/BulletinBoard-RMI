@@ -1,10 +1,7 @@
-package edu.bulletin.server;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
-import edu.bulletin.entities.MyUserInfo;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.ByteArrayInputStream;

@@ -1,6 +1,6 @@
-package edu.bulletin.server;
 
 import java.io.Serializable;
+
 
 public class ReaderResult implements Serializable {
     private int news;
@@ -30,4 +30,5 @@ public class ReaderResult implements Serializable {
     public void setsSeq(int sSeq) {
         this.sSeq = sSeq;
     }
+
 }

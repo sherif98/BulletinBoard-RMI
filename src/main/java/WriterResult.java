@@ -1,4 +1,3 @@
-package edu.bulletin.server;
 
 import java.io.Serializable;
 

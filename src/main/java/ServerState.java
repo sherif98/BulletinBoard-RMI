@@ -1,5 +1,3 @@
-package edu.bulletin.entities;
-
 import lombok.Value;
 
 import java.util.concurrent.atomic.AtomicInteger;

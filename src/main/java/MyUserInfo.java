@@ -1,5 +1,3 @@
-package edu.bulletin.entities;
-
 import com.jcraft.jsch.UserInfo;
 
 import javax.swing.*;

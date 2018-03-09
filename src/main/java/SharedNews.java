@@ -1,5 +1,3 @@
-package edu.bulletin.entities;
-
 public class SharedNews {
 
     private int readers = 0;

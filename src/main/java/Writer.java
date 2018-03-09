@@ -1,71 +1,11 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Random;
 
 public class Writer {
-
-    interface IStore extends Remote {
-        ReaderResult readNews(int clientId) throws RemoteException;
-
-        WriterResult write(int newsValue) throws RemoteException;
-    }
-
-    class ReaderResult implements Serializable {
-        private int news;
-        private int sSeq;
-        private int rSeq;
-
-        public int getrSeq() {
-            return rSeq;
-        }
-
-        public void setrSeq(int rSeq) {
-            this.rSeq = rSeq;
-        }
-
-        public int getNews() {
-            return news;
-        }
-
-        public void setNews(int news) {
-            this.news = news;
-        }
-
-        public int getsSeq() {
-            return sSeq;
-        }
-
-        public void setsSeq(int sSeq) {
-            this.sSeq = sSeq;
-        }
-    }
-
-    public class WriterResult implements Serializable {
-        private int sSeq;
-        private int rSeq;
-
-        public int getsSeq() {
-            return sSeq;
-        }
-
-        public void setsSeq(int sSeq) {
-            this.sSeq = sSeq;
-        }
-
-        public int getrSeq() {
-            return rSeq;
-        }
-
-        public void setrSeq(int rSeq) {
-            this.rSeq = rSeq;
-        }
-    }
 
 
     private String hostName;
@@ -121,7 +61,7 @@ public class Writer {
 
     private static void writeToReaderFile(final WriterResult result) {
         try {
-            fileWriter.write(String.format("%4d\t%4d\n", result.rSeq, result.sSeq));
+            fileWriter.write(String.format("%4d\t%4d\n", result.getrSeq(), result.getsSeq()));
         } catch (IOException e) {
             e.printStackTrace();
         }

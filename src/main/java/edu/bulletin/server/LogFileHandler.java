@@ -30,6 +30,7 @@ public class LogFileHandler {
                                         final int numOfReaders) {
         try {
             readerClientsFile.write(String.format("%4d\t%4d\t%4d\t%4d\n", seqNum, sharedNewsValue, readerId, numOfReaders));
+            readerClientsFile.flush();
         } catch (IOException e) {
             log.warn("failed to write to readers file");
         }
@@ -38,6 +39,7 @@ public class LogFileHandler {
     synchronized void writeToWriterFile(final int seqNum, final int sharedNewsValue) {
         try {
             writerClientFile.write(String.format("%4d\t%4d\t%3d\n", seqNum, sharedNewsValue, sharedNewsValue));
+            writerClientFile.flush();
         } catch (IOException e) {
             log.warn("failed to write to writers file");
         }

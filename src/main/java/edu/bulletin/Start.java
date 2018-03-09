@@ -2,7 +2,7 @@ package edu.bulletin;
 
 import com.jcraft.jsch.JSchException;
 import edu.bulletin.entities.ServerConfiguration;
-import edu.bulletin.server.BulletinServer;
+import edu.bulletin.server.RmiServer;
 import edu.bulletin.server.SSHManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -25,9 +25,9 @@ public class Start {
 
     private static void start(String password) {
         final ServerConfiguration config = ServerConfiguration.getInstance();
-        final BulletinServer server = new BulletinServer();
+        final RmiServer server = new RmiServer();
         SSHManager sshManager = new SSHManager();
-
+        server.start();
 
         int i;
         Optional<String> readerCode = readFile(READER);
@@ -54,13 +54,6 @@ public class Start {
                             config.getNumOfAccess())
                             .buildCommands();
             sshManager.executeCommand(config.getWriterNames().get(j), config.getWriterPasswords().get(j), command + "\n");
-        }
-
-
-        try {
-            server.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

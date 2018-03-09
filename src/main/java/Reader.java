@@ -1,12 +1,70 @@
-
-import java.io.*;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Reader {
+
+    interface IStore extends Remote {
+        ReaderResult readNews(int clientId) throws RemoteException;
+        WriterResult write(int newsValue) throws RemoteException;
+    }
+
+    class ReaderResult implements Serializable {
+        private int news;
+        private int sSeq;
+        private int rSeq;
+
+        public int getrSeq() {
+            return rSeq;
+        }
+
+        public void setrSeq(int rSeq) {
+            this.rSeq = rSeq;
+        }
+
+        public int getNews() {
+            return news;
+        }
+
+        public void setNews(int news) {
+            this.news = news;
+        }
+
+        public int getsSeq() {
+            return sSeq;
+        }
+
+        public void setsSeq(int sSeq) {
+            this.sSeq = sSeq;
+        }
+    }
+
+    public class WriterResult implements Serializable {
+        private int sSeq;
+        private int rSeq;
+
+        public int getsSeq() {
+            return sSeq;
+        }
+
+        public void setsSeq(int sSeq) {
+            this.sSeq = sSeq;
+        }
+
+        public int getrSeq() {
+            return rSeq;
+        }
+
+        public void setrSeq(int rSeq) {
+            this.rSeq = rSeq;
+        }
+    }
 
     private static final String CLIENT_TYPE = "reader";
 
@@ -52,31 +110,24 @@ public class Reader {
 
     public void run() {
         try {
-            Socket clientSocket = new Socket(hostName, portNumber);
-            PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream());
-            printWriter.println(CLIENT_TYPE);
-            printWriter.println(this.clientId);
-            printWriter.flush();
-
-            Scanner in = new Scanner(clientSocket.getInputStream());
-            int rSeq = in.nextInt();
-            int oVal = in.nextInt();
-            int sSeq = in.nextInt();
-            writeToReaderFile(rSeq, oVal, sSeq);
-
-            printWriter.close();
-            in.close();
-            clientSocket.close();
-        } catch (IOException e) {
+            final Registry registry = LocateRegistry.getRegistry(hostName, portNumber);
+            final IStore store = (IStore) registry.lookup("store");
+            final ReaderResult result = store.readNews(clientId);
+            writeToReaderFile(result);
+        } catch (final Exception e) {
             System.out.println("error while creating client socket");
         }
     }
 
-    private static void writeToReaderFile(int rSeq, int oVal, int sSeq) {
+    private static void writeToReaderFile(final ReaderResult result) {
         try {
-            fileWriter.write(String.format("%4d\t%4d\t%4d\n", rSeq, sSeq, oVal));
+            fileWriter.write(String.format("%4d\t%4d\t%4d\n", result.rSeq, result.sSeq, result.news));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
+
+
+
+

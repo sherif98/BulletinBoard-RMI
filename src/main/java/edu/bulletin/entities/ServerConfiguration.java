@@ -21,7 +21,7 @@ public final class ServerConfiguration {
             System.out.println(configPath);
             final PropertiesConfiguration properties = configs.properties(new File(configPath));
             serverConfiguration.setIp(properties.getString("RW.server"));
-            serverConfiguration.setPort(properties.getInt("RW.server.port"));
+            serverConfiguration.setPort(properties.getInt("RW.rmiregistry.port"));
             serverConfiguration.setNumOfReaders(properties.getInt("RW.numberOfReaders"));
             for (int i = 0; i < serverConfiguration.numOfReaders; ++i) {
                 serverConfiguration.readerNames.add(properties.getString("RW.reader" + i));
